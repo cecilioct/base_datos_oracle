@@ -703,3 +703,115 @@ CREATE TABLE tipo_dimension (
 -- --------------------------------------------------------
 -- --------------------------------------------------------
 -- --------------------------------------------------------
+----------------------------------------------------------------------------------------
+------------------------------Modulo Servicio Administrado------------------------------
+----------------------------------------------------------------------------------------
+
+
+CREATE TABLE actividad (
+  actividad_id NUMBER GENERATED ALWAYS as IDENTITY (START with 1 INCREMENT  BY 1),
+  clasificacion_id number(11) NOT NULL,
+  prioridad_actividad_id number(11) DEFAULT NULL,
+  descripcion varchar2(255) NOT NULL,
+  limite_ejecuciones number(11) DEFAULT NULL,
+  CONSTRAINT actividad_id_pk PRIMARY KEY (actividad_id) 
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table calendario_actividad
+--
+
+
+CREATE TABLE calendario_actividad (
+  calendario_actividad_id NUMBER GENERATED ALWAYS as IDENTITY (START with 1 INCREMENT  BY 1),
+  calendario_id number(11) NOT NULL,
+  actividad_id number(11) NOT NULL,
+  contacto_id number(11) NOT NULL,
+  hora_inicio TIMESTAMP NOT NULL,
+  hora_final TIMESTAMP NOT NULL,
+  estado_actividad_id number(11) NOT NULL,
+  observacion varchar2(255) NOT NULL,
+  CONSTRAINT calendario_actividad_id_pk PRIMARY KEY (calendario_actividad_id)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table clasificacion
+--
+
+
+CREATE TABLE clasificacion (
+  clasificacion_id NUMBER GENERATED ALWAYS as IDENTITY (START with 1 INCREMENT  BY 1),
+  titulo varchar2(50) NOT NULL,
+  tipo varchar2(50) NOT NULL,
+  frecuencia varchar2(50) DEFAULT NULL,
+  CONSTRAINT clasificacion_id_pk PRIMARY KEY (clasificacion_id)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table entregable_actividad
+--
+CREATE TABLE entregable_actividad (
+  entregable_actividad_id NUMBER GENERATED ALWAYS as IDENTITY (START with 1 INCREMENT  BY 1),
+  calendario_actividad_id number(11) NOT NULL,
+  nombre_doc varchar2(50) NOT NULL,
+  cauza_raiz varchar2(255) NOT NULL,
+  solucion varchar2(255) NOT NULL,
+  comentario varchar2(255) DEFAULT NULL,
+  CONSTRAINT entregable_actividad_id_pk PRIMARY KEY (entregable_actividad_id)  
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table estado_actividad
+--
+
+CREATE TABLE estado_actividad (
+  estado_actividad_id NUMBER GENERATED ALWAYS as IDENTITY (START with 1 INCREMENT  BY 1),
+  estado varchar2(50) NOT NULL,
+  CONSTRAINT estado_actividad_id_pk PRIMARY KEY (estado_actividad_id)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table prioridad_actividad
+--
+
+CREATE TABLE prioridad_actividad (
+  prioridad_actividad_id NUMBER GENERATED ALWAYS as IDENTITY (START with 1 INCREMENT  BY 1),
+  nivel varchar2(50) NOT NULL,
+  tiempo_min TIMESTAMP NOT NULL,
+  tiempo_max TIMESTAMP NOT NULL,
+  CONSTRAINT prioridad_actividad_id_pk PRIMARY KEY (prioridad_actividad_id)
+);
+
+-- --------------------------------------------------------
+
+--
+-- CONSTRAINTs for table actividad
+--
+ALTER TABLE actividad
+  ADD CONSTRAINT FK_ACTIVIDAD_CLASIFICACION FOREIGN KEY (clasificacion_id) REFERENCES clasificacion (clasificacion_id)  ON DELETE CASCADE
+  ADD CONSTRAINT FK_ACTIVIDAD_PRIORIDAD FOREIGN KEY (prioridad_actividad_id) REFERENCES prioridad_actividad (prioridad_actividad_id)  ON DELETE CASCADE
+
+--
+-- CONSTRAINTs for table calendario_actividad
+--
+ALTER TABLE calendario_actividad
+  ADD CONSTRAINT FK_CALACT_ACTIVIDAD FOREIGN KEY (actividad_id) REFERENCES actividad (actividad_id)  ON DELETE CASCADE
+  ADD CONSTRAINT FK_CALACT_CALENDARIO FOREIGN KEY (calendario_id) REFERENCES calendario (calendario_id)  ON DELETE CASCADE
+  ADD CONSTRAINT FK_CALACT_CONTACTO FOREIGN KEY (contacto_id) REFERENCES contacto (contacto_id)  ON DELETE CASCADE
+  ADD CONSTRAINT FK_CALACT_ESTADO FOREIGN KEY (estado_actividad_id) REFERENCES estado_actividad (estado_actividad_id)  ON DELETE CASCADE
+
+--
+-- CONSTRAINTs for table entregable_actividad
+--
+ALTER TABLE entregable_actividad
+  ADD CONSTRAINT FK_ENTREGABLE_CALACT FOREIGN KEY (calendario_actividad_id) REFERENCES calendario_actividad (calendario_actividad_id)  ON DELETE CASCADE
