@@ -2,6 +2,6 @@
 
 #Cecilio
 #Vazquez
-#Darwin
-#Bryan Zib
+#Darwin Cocom
+#Bryan
 #Colli
