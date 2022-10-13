@@ -75,7 +75,7 @@ CREATE TABLE contacto (
   CONSTRAINT contacto_pk PRIMARY KEY(contacto_id),
   CONSTRAINT cont_emp_fk FOREIGN KEY (empresa_id) REFERENCES empresa (empresa_id) ON DELETE CASCADE,
   CONSTRAINT cont_dep_fk FOREIGN KEY (departamento_id) REFERENCES departamento (departamento_id) ON DELETE CASCADE,
-  CONSTRAINT cont_pue_fk FOREIGN KEY (puesto_id) REFERENCES puesto (puesto_id) ON DELETE CASCADE,
+  CONSTRAINT cont_pue_fk FOREIGN KEY (puesto_id) REFERENCES puesto (puesto_id) ON DELETE CASCADE
 );
 
 
