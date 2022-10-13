@@ -269,3 +269,183 @@ BEGIN
     :new.equipo_trabajo_id := seq_quipo_trabajo_id.nextval;
 END;
 --
+-------------------------------------------------------------------------------
+------------------------------Modulo Asignaciones------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE anexos (
+  id_anexo NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  id_contrato number(25) NOT NULL,
+  fecha_elab_anexo date NOT NULL,
+  numero_empleado number(25) NOT NULL,
+  nombre_archivo varchar2(40) NOT NULL,
+  archivo_anexo varchar(100) NOT NULL,
+  fecha_envio_cliente date DEFAULT NULL,
+  fecha_aprob_cliente date DEFAULT NULL,
+CONSTRAINT id_anexos_pk PRIMARY KEY(id_anexo)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE asignaciones (
+  id_asignaciones NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  numero_cliente number(25) NOT NULL,
+  numero_proyecto number(25) NOT NULL,
+  aprobador number(25) NOT NULL,
+  numero_supervisor number(25) NOT NULL,
+  numero_consultor number(25) NOT NULL,
+  fecha_inicio date NOT NULL,
+  fecha_fin date DEFAULT NULL,
+CONSTRAINT id_asignaciones_pk PRIMARY KEY(id_asignaciones)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE asignacion_recurso (
+  id_asign NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  num_empleado number(25) NOT NULL,
+  num_recurso_mat number(25) NOT NULL,
+  fecha_inicio date NOT NULL,
+  fecha_fin date DEFAULT NULL,
+  fecha_entrega_recurso date NOT NULL,
+  fecha_devolucion_recurso date DEFAULT NULL,
+  observaciones varchar(100) NOT NULL,
+CONSTRAINT id_asign_pk PRIMARY KEY(id_asign)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE contratos (
+  id_contrato NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  numero_compania number(25) NOT NULL,
+  numero_cliente number(25) NOT NULL,
+  fecha_elaboracion date NOT NULL,
+  numero_empleado number(25) NOT NULL,
+  nombre_archivo varchar(100) NOT NULL,
+  url_archivo varchar2(50) NOT NULL,
+  fecha_envio_cliente date NOT NULL,
+  fecha_aprob_cliente date DEFAULT NULL,
+CONSTRAINT id_contrato_pk PRIMARY KEY(id_contrato)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE estatus_recurso_material (
+  id_estatus NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  estatus_rec varchar2(10) NOT NULL,
+CONSTRAINT id_estatus_pk PRIMARY KEY(id_estatus)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE estatus_revision_docs_proyecto (
+  id_estatus_revisor NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  estatus varchar2(20) NOT NULL,
+CONSTRAINT id_estatus_revisor_pk PRIMARY KEY(id_estatus_revisor)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE orden_de_compra (
+  id_orden_compra NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  num_oc_cliente varchar2(30) NOT NULL,
+  numero_compania number(25) NOT NULL,
+  numero_cliente number(25) NOT NULL,
+  fecha_elab_oc date NOT NULL,
+  concepto varchar(100) NOT NULL,
+  moneda varchar2(25) NOT NULL,
+  monto BINARY_DOUBLE NOT NULL,
+CONSTRAINT id_orden_compra_pk PRIMARY KEY(id_orden_compra)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE proyecto (
+  id_proyecto NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  nombre_proyecto varchar2(30) NOT NULL,
+  fecha_inicio date NOT NULL,
+  fecha_fin date DEFAULT NULL,
+  numero_cliente number(25) NOT NULL,
+  tipo_documento number(25) DEFAULT NULL,
+  id_contrato number(25) DEFAULT NULL,
+  id_anexo number(25) DEFAULT NULL,
+  id_orden_compra number(25) DEFAULT NULL,
+CONSTRAINT id_proyecto_pk PRIMARY KEY(id_proyecto)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE recursos_materiales (
+  id_recurso NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  tipo_dispositivo varchar2(25) NOT NULL,
+  marca varchar2(25) NOT NULL,
+  modelo varchar2(25) NOT NULL,
+  numero_serie varchar2(25) NOT NULL,
+  sku varchar2(25) NOT NULL,
+  descripcion varchar(100) NOT NULL,
+  estatus number(25) NOT NULL,
+CONSTRAINT id_recurso_pk PRIMARY KEY(id_recurso)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE revisiones (
+  id_revision NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  tipo_documento number(25) NOT NULL,
+  identificador_documento number(25) NOT NULL,
+  Revisor number(25) NOT NULL,
+  Estatus number(25) NOT NULL,
+  Fecha_de_Revision date NOT NULL,
+CONSTRAINT id_revision_pk PRIMARY KEY(id_revision)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE tipo_doc (
+  id_tipo_doc NUMBER GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  docs varchar2(20) NOT NULL,
+CONSTRAINT id_tipo_doc_pk PRIMARY KEY(id_tipo_doc)
+);
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+ALTER TABLE anexos
+  ADD CONSTRAINT anexos_ibfk_1 FOREIGN KEY (id_contrato) REFERENCES contratos (id_contrato) ON DELETE CASCADE;
+  ADD CONSTRAINT anexos_ibfk_2 FOREIGN KEY (numero_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+
+ALTER TABLE asignaciones
+  ADD CONSTRAINT asignaciones_ibfk_2 FOREIGN KEY (numero_proyecto) REFERENCES proyecto (id_proyecto) ON DELETE CASCADE;
+  ADD CONSTRAINT asignaciones_ibfk_3 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
+  ADD CONSTRAINT asignaciones_ibfk_4 FOREIGN KEY (aprobador) REFERENCES contacto (contacto_id) ON DELETE CASCADE;
+  ADD CONSTRAINT asignaciones_ibfk_5 FOREIGN KEY (numero_supervisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE;
+  ADD CONSTRAINT asignaciones_ibfk_6 FOREIGN KEY (numero_consultor) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+
+ALTER TABLE asignacion_recurso
+  ADD CONSTRAINT asignacion_recurso_ibfk_2 FOREIGN KEY (num_recurso_mat) REFERENCES recursos_materiales (id_recurso) ON DELETE CASCADE;
+  ADD CONSTRAINT asignacion_recurso_ibfk_3 FOREIGN KEY (num_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+
+ALTER TABLE contratos
+  ADD CONSTRAINT contratos_ibfk_1 FOREIGN KEY (numero_compania) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
+  ADD CONSTRAINT contratos_ibfk_2 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
+  ADD CONSTRAINT contratos_ibfk_3 FOREIGN KEY (numero_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+
+ALTER TABLE orden_de_compra
+  ADD CONSTRAINT orden_de_compra_ibfk_1 FOREIGN KEY (numero_compania) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
+  ADD CONSTRAINT orden_de_compra_ibfk_2 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE ;
+
+ALTER TABLE proyecto
+  ADD CONSTRAINT proyecto_ibfk_2 FOREIGN KEY (tipo_documento) REFERENCES tipo_doc (id_tipo_doc) ON DELETE CASCADE;
+  ADD CONSTRAINT proyecto_ibfk_3 FOREIGN KEY (id_anexo) REFERENCES anexos (id_anexo) ON DELETE CASCADE;
+  ADD CONSTRAINT proyecto_ibfk_4 FOREIGN KEY (id_contrato) REFERENCES contratos (id_contrato) ON DELETE CASCADE;
+  ADD CONSTRAINT proyecto_ibfk_5 FOREIGN KEY (id_orden_compra) REFERENCES orden_de_compra (id_orden_compra) ON DELETE CASCADE;
+  ADD CONSTRAINT proyecto_ibfk_6 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE ;
+
+ALTER TABLE recursos_materiales
+  ADD CONSTRAINT recursos_materiales_ibfk_1 FOREIGN KEY (estatus) REFERENCES estatus_recurso_material (id_estatus) ON DELETE CASCADE ;
+
+ALTER TABLE revisiones
+  ADD CONSTRAINT revisiones_ibfk_2 FOREIGN KEY (Estatus) REFERENCES estatus_revision_docs_proyecto (id_estatus_revisor) ON DELETE CASCADE;
+  ADD CONSTRAINT revisiones_ibfk_3 FOREIGN KEY (tipo_documento) REFERENCES tipo_doc (id_tipo_doc) ON DELETE CASCADE;
+  ADD CONSTRAINT revisiones_ibfk_4 FOREIGN KEY (Revisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
