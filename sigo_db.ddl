@@ -610,3 +610,94 @@ ALTER TABLE revisiones_actividad
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
+--
+-- Table structure for table catalogo_servicios
+--
+
+CREATE TABLE catalogo_servicios (
+  servicio_id number(11) GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  nombre varchar2(5) COLLATE utf8_unicode_ci NOT NULL,
+  descripcion varchar2(100) COLLATE utf8_unicode_ci NOT NULL,
+  CONSTRAINT catalogo_servicios_pk PRIMARY KEY (servicio_id)
+);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table encabezado_presupuesto
+--
+CREATE TABLE encabezado_presupuesto (
+  enc_pre_id number(11) GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  nombre varchar2(100) COLLATE utf8_unicode_ci NOT NULL,
+  moneda_capura varchar2(3) COLLATE utf8_unicode_ci NOT NULL COMMENT 'USD, MXN',
+  created_at date NOT NULL,
+  last_update date NOT NULL,
+  contacto_id number(11) NOT NULL,
+  capturado char(1) COLLATE utf8_unicode_ci NOT NULL COMMENT 's,n',
+  fecha_revision date DEFAULT NULL,
+  estatus varchar2(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'aprovado o rechazado',
+  observaciones varchar2(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  CONSTRAINT encabezado_presupuesto_pk PRIMARY KEY (enc_pre_id),
+  CONSTRAINT encabezado_presupuesto_fk1 FOREIGN KEY (contacto_id) REFERENCES contacto (contacto_id)
+);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table lineas_presupuesto
+--
+
+CREATE TABLE lineas_presupuesto (
+  lineas_pre_op number(11) GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  contacto_id number(11) NOT NULL,
+  dimension number(11) NOT NULL,
+  mes_presupuesto number(11) NOT NULL,
+  tipo_servicio number(11) NOT NULL,
+  valor_presupuesto number(11) NULL,
+  enc_pre_id number(11) NOT NULL,
+  CONSTRAINT lineas_presupuesto_pk PRIMARY KEY (lineas_pre_op),
+  CONSTRAINT lineas_presupuesto_fk_1 FOREIGN KEY (mes_presupuesto) REFERENCES meses (meses_id),
+  CONSTRAINT lineas_presupuesto_fk_2 FOREIGN KEY (tipo_servicio) REFERENCES catalogo_servicios (servicio_id),
+  CONSTRAINT lineas_presupuesto_fk_3 FOREIGN KEY (dimension) REFERENCES tipo_dimension (tipo_dimension_id),
+  CONSTRAINT lineas_presupuesto_fk_4 FOREIGN KEY (enc_pre_id) REFERENCES encabezado_presupuesto (enc_pre_id),
+  CONSTRAINT lineas_presupuesto_fk_5 FOREIGN KEY (contacto_id) REFERENCES contacto (contacto_id)
+);
+-- --------------------------------------------------------
+--
+-- Table structure for table meses
+--
+
+CREATE TABLE meses (
+  meses_id number(11) GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  nombre varchar2(20) COLLATE utf8_unicode_ci NOT NULL,
+  CONSTRAINT meses_pk PRIMARY KEY (meses_id)
+) COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table nvl_consultores
+--
+
+CREATE TABLE nvl_consultores (
+  nvl_id number(11) NOT NULL,
+  nivel varchar2(2) COLLATE utf8_unicode_ci NOT NULL,
+  nombre varchar2(20) COLLATE utf8_unicode_ci NOT NULL,
+  year varchar2(4) COLLATE utf8_unicode_ci NOT NULL,
+  tarifa_usd number(11) NOT NULL,
+  TC number(11) NOT NULL,
+  tarifa_mxn number(11) NOT NULL,
+  CONSTRAINT nvl_consultores_pk PRIMARY KEY (nvl_id)
+);
+
+-- --------------------------------------------------------
+--
+-- Table structure for table tipo_dimension
+--
+
+CREATE TABLE tipo_dimension (
+  tipo_dimension_id number(11) GENERATED ALWAYS as IDENTITY(START with 1 INCREMENT by 1),
+  nombre varchar2(20) COLLATE utf8_unicode_ci NOT NULL,
+  CONSTRAINT tipo_dimension_pk PRIMARY KEY (tipo_dimension_id)
+);
+
+-- --------------------------------------------------------
+-- --------------------------------------------------------
+-- --------------------------------------------------------
