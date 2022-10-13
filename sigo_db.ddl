@@ -409,43 +409,43 @@ CONSTRAINT id_tipo_doc_pk PRIMARY KEY(id_tipo_doc)
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 ALTER TABLE anexos
-  ADD CONSTRAINT anexos_ibfk_1 FOREIGN KEY (id_contrato) REFERENCES contratos (id_contrato) ON DELETE CASCADE;
-  ADD CONSTRAINT anexos_ibfk_2 FOREIGN KEY (numero_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT anexos_ibfk_1 FOREIGN KEY (id_contrato) REFERENCES contratos (id_contrato) ON DELETE CASCADE
+  ADD CONSTRAINT anexos_ibfk_2 FOREIGN KEY (numero_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE 
 
 ALTER TABLE asignaciones
-  ADD CONSTRAINT asignaciones_ibfk_2 FOREIGN KEY (numero_proyecto) REFERENCES proyecto (id_proyecto) ON DELETE CASCADE;
-  ADD CONSTRAINT asignaciones_ibfk_3 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
-  ADD CONSTRAINT asignaciones_ibfk_4 FOREIGN KEY (aprobador) REFERENCES contacto (contacto_id) ON DELETE CASCADE;
-  ADD CONSTRAINT asignaciones_ibfk_5 FOREIGN KEY (numero_supervisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE;
-  ADD CONSTRAINT asignaciones_ibfk_6 FOREIGN KEY (numero_consultor) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT asignaciones_ibfk_2 FOREIGN KEY (numero_proyecto) REFERENCES proyecto (id_proyecto) ON DELETE CASCADE
+  ADD CONSTRAINT asignaciones_ibfk_3 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE
+  ADD CONSTRAINT asignaciones_ibfk_4 FOREIGN KEY (aprobador) REFERENCES contacto (contacto_id) ON DELETE CASCADE
+  ADD CONSTRAINT asignaciones_ibfk_5 FOREIGN KEY (numero_supervisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE
+  ADD CONSTRAINT asignaciones_ibfk_6 FOREIGN KEY (numero_consultor) REFERENCES contacto (contacto_id) ON DELETE CASCADE 
 
 ALTER TABLE asignacion_recurso
-  ADD CONSTRAINT asignacion_recurso_ibfk_2 FOREIGN KEY (num_recurso_mat) REFERENCES recursos_materiales (id_recurso) ON DELETE CASCADE;
-  ADD CONSTRAINT asignacion_recurso_ibfk_3 FOREIGN KEY (num_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT asignacion_recurso_ibfk_2 FOREIGN KEY (num_recurso_mat) REFERENCES recursos_materiales (id_recurso) ON DELETE CASCADE
+  ADD CONSTRAINT asignacion_recurso_ibfk_3 FOREIGN KEY (num_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE 
 
 ALTER TABLE contratos
-  ADD CONSTRAINT contratos_ibfk_1 FOREIGN KEY (numero_compania) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
-  ADD CONSTRAINT contratos_ibfk_2 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
-  ADD CONSTRAINT contratos_ibfk_3 FOREIGN KEY (numero_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT contratos_ibfk_1 FOREIGN KEY (numero_compania) REFERENCES empresa (empresa_id) ON DELETE CASCADE
+  ADD CONSTRAINT contratos_ibfk_2 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE
+  ADD CONSTRAINT contratos_ibfk_3 FOREIGN KEY (numero_empleado) REFERENCES contacto (contacto_id) ON DELETE CASCADE 
 
 ALTER TABLE orden_de_compra
-  ADD CONSTRAINT orden_de_compra_ibfk_1 FOREIGN KEY (numero_compania) REFERENCES empresa (empresa_id) ON DELETE CASCADE;
-  ADD CONSTRAINT orden_de_compra_ibfk_2 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT orden_de_compra_ibfk_1 FOREIGN KEY (numero_compania) REFERENCES empresa (empresa_id) ON DELETE CASCADE
+  ADD CONSTRAINT orden_de_compra_ibfk_2 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE 
 
 ALTER TABLE proyecto
-  ADD CONSTRAINT proyecto_ibfk_2 FOREIGN KEY (tipo_documento) REFERENCES tipo_doc (id_tipo_doc) ON DELETE CASCADE;
-  ADD CONSTRAINT proyecto_ibfk_3 FOREIGN KEY (id_anexo) REFERENCES anexos (id_anexo) ON DELETE CASCADE;
-  ADD CONSTRAINT proyecto_ibfk_4 FOREIGN KEY (id_contrato) REFERENCES contratos (id_contrato) ON DELETE CASCADE;
-  ADD CONSTRAINT proyecto_ibfk_5 FOREIGN KEY (id_orden_compra) REFERENCES orden_de_compra (id_orden_compra) ON DELETE CASCADE;
-  ADD CONSTRAINT proyecto_ibfk_6 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT proyecto_ibfk_2 FOREIGN KEY (tipo_documento) REFERENCES tipo_doc (id_tipo_doc) ON DELETE CASCADE
+  ADD CONSTRAINT proyecto_ibfk_3 FOREIGN KEY (id_anexo) REFERENCES anexos (id_anexo) ON DELETE CASCADE
+  ADD CONSTRAINT proyecto_ibfk_4 FOREIGN KEY (id_contrato) REFERENCES contratos (id_contrato) ON DELETE CASCADE
+  ADD CONSTRAINT proyecto_ibfk_5 FOREIGN KEY (id_orden_compra) REFERENCES orden_de_compra (id_orden_compra) ON DELETE CASCADE
+  ADD CONSTRAINT proyecto_ibfk_6 FOREIGN KEY (numero_cliente) REFERENCES empresa (empresa_id) ON DELETE CASCADE 
 
 ALTER TABLE recursos_materiales
-  ADD CONSTRAINT recursos_materiales_ibfk_1 FOREIGN KEY (estatus) REFERENCES estatus_recurso_material (id_estatus) ON DELETE CASCADE ;
+  ADD CONSTRAINT recursos_materiales_ibfk_1 FOREIGN KEY (estatus) REFERENCES estatus_recurso_material (id_estatus) ON DELETE CASCADE 
 
 ALTER TABLE revisiones
-  ADD CONSTRAINT revisiones_ibfk_2 FOREIGN KEY (Estatus) REFERENCES estatus_revision_docs_proyecto (id_estatus_revisor) ON DELETE CASCADE;
-  ADD CONSTRAINT revisiones_ibfk_3 FOREIGN KEY (tipo_documento) REFERENCES tipo_doc (id_tipo_doc) ON DELETE CASCADE;
-  ADD CONSTRAINT revisiones_ibfk_4 FOREIGN KEY (Revisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE ;
+  ADD CONSTRAINT revisiones_ibfk_2 FOREIGN KEY (Estatus) REFERENCES estatus_revision_docs_proyecto (id_estatus_revisor) ON DELETE CASCADE
+  ADD CONSTRAINT revisiones_ibfk_3 FOREIGN KEY (tipo_documento) REFERENCES tipo_doc (id_tipo_doc) ON DELETE CASCADE
+  ADD CONSTRAINT revisiones_ibfk_4 FOREIGN KEY (Revisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
