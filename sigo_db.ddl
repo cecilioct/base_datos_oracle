@@ -73,12 +73,12 @@ CREATE TABLE contacto (
   puesto_id Number(11) DEFAULT NULL,
   reporta_a Number(11) DEFAULT NULL,
   CONSTRAINT contacto_pk PRIMARY KEY(contacto_id),
-  CONSTRAINT cont_emp_fk FOREIGN KEY (empresa_id) REFERENCES empresa (empresa_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT cont_dep_fk FOREIGN KEY (departamento_id) REFERENCES departamento (departamento_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT cont_pue_fk FOREIGN KEY (puesto_id) REFERENCES puesto (puesto_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT cont_con_fk FOREIGN KEY (reporta_a) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE --detalle aqui
-
+  CONSTRAINT cont_emp_fk FOREIGN KEY (empresa_id) REFERENCES empresa (empresa_id) ON DELETE CASCADE,
+  CONSTRAINT cont_dep_fk FOREIGN KEY (departamento_id) REFERENCES departamento (departamento_id) ON DELETE CASCADE,
+  CONSTRAINT cont_pue_fk FOREIGN KEY (puesto_id) REFERENCES puesto (puesto_id) ON DELETE CASCADE,
 );
+
+
 CREATE SEQUENCE seq_contacto_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
 
 CREATE OR REPLACE TRIGGER trgr_tbl_contacto_id BEFORE
@@ -137,9 +137,9 @@ CREATE TABLE usuario (
   cuenta_id Number(11) DEFAULT NULL,
   estado_cuenta_id Number(10) NOT NULL,
   CONSTRAINT usuario_pk PRIMARY KEY(usuario_id)
-  CONSTRAINT usu_rol_fk FOREIGN KEY (role_id) REFERENCES role (role_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT usu_cue_fk FOREIGN KEY (cuenta_id) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT usu_est_fk FOREIGN KEY (estado_cuenta_id) REFERENCES estado_cuenta (estado_cuenta_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT usu_rol_fk FOREIGN KEY (role_id) REFERENCES role (role_id) ON DELETE CASCADE,
+  CONSTRAINT usu_cue_fk FOREIGN KEY (cuenta_id) REFERENCES contacto (contacto_id) ON DELETE CASCADE,
+  CONSTRAINT usu_est_fk FOREIGN KEY (estado_cuenta_id) REFERENCES estado_cuenta (estado_cuenta_id) ON DELETE CASCADE
 );
 CREATE SEQUENCE seq_usuario_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
 
@@ -232,9 +232,9 @@ CREATE TABLE ticket (
   prioridad_ticket_id Number(11) NOT NULL,
   estado_ticket_id Number(11) DEFAULT NULL,
   CONSTRAINT ticket_pk PRIMARY KEY(ticket_id),
-  CONSTRAINT tic_tit_fk FOREIGN KEY (tipo_ticket_id) REFERENCES tipo_ticket (tipo_ticket_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT tic_pri_fk FOREIGN KEY (prioridad_ticket_id) REFERENCES prioridad_ticket (prioridad_ticket_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT tic_est_fk FOREIGN KEY (estado_ticket_id) REFERENCES estado_ticket (estado_ticket_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT tic_tit_fk FOREIGN KEY (tipo_ticket_id) REFERENCES tipo_ticket (tipo_ticket_id) ON DELETE CASCADe,
+  CONSTRAINT tic_pri_fk FOREIGN KEY (prioridad_ticket_id) REFERENCES prioridad_ticket (prioridad_ticket_id) ON DELETE CASCADE,
+  CONSTRAINT tic_est_fk FOREIGN KEY (estado_ticket_id) REFERENCES estado_ticket (estado_ticket_id) ON DELETE CASCADE
 );
 CREATE SEQUENCE seq_ticket_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
 
@@ -256,8 +256,8 @@ CREATE TABLE equipo_trabajo (
   jerarquia Number(10) NOT NULL,
   ticket_id Number(10) NOT NULL,
   CONSTRAINT equipo_trabajo_pk PRIMARY KEY(equipo_trabajo_id),
-  CONSTRAINT eqt_con_fk FOREIGN KEY (consultor_id) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT eqt_tic_fk FOREIGN KEY (ticket_id) REFERENCES ticket (ticket_id) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT eqt_con_fk FOREIGN KEY (consultor_id) REFERENCES contacto (contacto_id) ON DELETE CASCADE,
+  CONSTRAINT eqt_tic_fk FOREIGN KEY (ticket_id) REFERENCES ticket (ticket_id) ON DELETE CASCADE
 );
 CREATE SEQUENCE seq_equipo_trabajo_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
 
@@ -268,6 +268,7 @@ CREATE OR REPLACE TRIGGER trgr_tbl_equipo_trabajo_id BEFORE
 BEGIN
     :new.equipo_trabajo_id := seq_quipo_trabajo_id.nextval;
 END;
+--
 --
 -------------------------------------------------------------------------------
 ------------------------------Modulo Asignaciones------------------------------
