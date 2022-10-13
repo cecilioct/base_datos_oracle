@@ -449,3 +449,164 @@ ALTER TABLE revisiones
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+--------------------------Modulo Reporte de Tiempo-----------------------------
+-------------------------------------------------------------------------------
+CREATE TABLE calendario (
+  calendario_id number(11) NOT NULL ,
+  fecha number NOT NULL,
+  anio number NOT NULL,
+  mes number NOT NULL,
+  semana number NOT NULL,
+  dia number NOT NULL,
+  nombre_dia varchar2(20) NOT NULL,
+  CONSTRAINT calendario_pk PRIMARY KEY(calendario_id)
+);
+
+CREATE SEQUENCE seq_calendario_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
+
+CREATE OR REPLACE TRIGGER trgr_tbl_calendario BEFORE
+    INSERT ON calendario
+    FOR EACH ROW
+BEGIN
+    :new.calendario_id := seq_calendario_id.nextval;
+END;
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+CREATE TABLE catalogo_actividades (
+  catalogo_act_id number(11) NOT NULL,
+  nombre_actividad varchar2(50) NOT NULL,
+  tipo varchar2(50) NOT NULL,
+  subtipo varchar2(50) NOT NULL,
+  facturable varchar2(2) NOT NULL,
+  observaciones_cliente varchar2(300) NOT NULL,
+  observaciones_supervisor varchar2(300) NOT NULL,
+  CONSTRAINT catalogo_actividades_pk PRIMARY KEY(catalogo_act_id)
+);
+
+CREATE SEQUENCE seq_catalogo_act_id_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
+
+CREATE OR REPLACE TRIGGER trgr_tbl_catalogo_actividades BEFORE
+    INSERT ON catalogo_actividades
+    FOR EACH ROW
+BEGIN
+    :new.catalogo_act_id := seq_catalogo_act_id_id.nextval;
+END;
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+CREATE TABLE encabezado_reporte (
+  encabezado_id number(11) NOT NULL ,
+  cliente_id number(11) DEFAULT NULL,
+  proyecto_id number(11) DEFAULT NULL,
+  consultor_id number(11) NOT NULL,
+  aprobador_cliente number(11) NOT NULL,
+  aprobador_interno number(11) NOT NULL,
+  anio number(11) NOT NULL,
+  semana_anio number(11) NOT NULL,
+  horas_facturables number(3) NOT NULL,
+  horas_no_facturables number(3) NOT NULL,
+  total_horas number(3) NOT NULL,
+  estado varchar2(20)  DEFAULT NULL,
+  fecha_rev_cliente date DEFAULT NULL,
+  fecha_rev_supervisor date DEFAULT NULL,
+  CONSTRAINT encabezado_reporte_pk PRIMARY KEY(encabezado_id)
+  );
+
+  CREATE SEQUENCE seq_encabezado_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
+
+  CREATE OR REPLACE TRIGGER trgr_tbl_encabezado_reporte BEFORE
+      INSERT ON encabezado_reporte
+      FOR EACH ROW
+  BEGIN
+      :new.encabezado_id := seq_encabezado_id.nextval;
+  END;
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+
+CREATE TABLE estado_revision (
+  estado_rev_id number(11) NOT NULL ,
+  nombre_estado varchar2(50)  NOT NULL,
+  CONSTRAINT estado_revision_pk PRIMARY KEY(estado_rev_id)
+);
+
+CREATE SEQUENCE seq_estado_rev_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
+
+  CREATE OR REPLACE TRIGGER trgr_tbl_estado_revision BEFORE
+      INSERT ON estado_revision
+      FOR EACH ROW
+  BEGIN
+      :new.estado_rev_id := seq_estado_rev_id.nextval;
+  END;
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+CREATE TABLE lineas_reporte (
+  lineas_id number(11) NOT NULL ,
+  actividad_id number(11) NOT NULL,
+  fecha_actividad number(11) NOT NULL,
+  horas_actividad number(11) NOT NULL,
+  observaciones_cliente varchar2(300)  NOT NULL,
+  observaciones_supervisor varchar2(300)  NOT NULL,
+  encabezado_reporte_id number(11) NOT NULL,
+  CONSTRAINT lineas_reporte_pk PRIMARY KEY(lineas_id)
+);
+
+CREATE SEQUENCE seq_lineas_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
+
+  CREATE OR REPLACE TRIGGER trgr_tbl_lineas_reporte BEFORE
+      INSERT ON lineas_reporte
+      FOR EACH ROW
+  BEGIN
+      :new.lineas_id := seq_lineas_id.nextval;
+  END;
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+CREATE TABLE revisiones_actividad (
+  rev_act_id number(11) NOT NULL ,
+  fecha_rev date NOT NULL,
+  reviso_cliente number(11) NOT NULL,
+  reviso_supervisor number(11) NOT NULL,
+  estado_revision number(11) NOT NULL,
+  CONSTRAINT revisiones_actividad_pk PRIMARY KEY(rev_act_id)
+);
+
+CREATE SEQUENCE seq_rev_act_id START WITH 1 INCREMENT BY 1 NOCACHE ORDER;
+
+  CREATE OR REPLACE TRIGGER trgr_tbl_revisiones_actividad BEFORE
+      INSERT ON revisiones_actividad
+      FOR EACH ROW
+  BEGIN
+      :new.rev_act_id := seq_rev_act_id.nextval;
+  END;
+
+-- CONSTRAINTs for table encabezado_reporte
+--
+ALTER TABLE encabezado_reporte
+   CONSTRAINT encabezado_anio_fk FOREIGN KEY (anio) REFERENCES calendario (calendario_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT encabezado_aproba_cliente_fk FOREIGN KEY (aprobador_cliente) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT encabezado_aproba_interno FOREIGN KEY (aprobador_interno) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT encabezado_cliente_fk FOREIGN KEY (cliente_id) REFERENCES empresa (empresa_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT encabezado_consultor_fk FOREIGN KEY (consultor_id) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT encabezado_proyecto_fk FOREIGN KEY (proyecto_id) REFERENCES proyecto (id_proyecto) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CONSTRAINTs for table lineas_reporte
+--
+ALTER TABLE lineas_reporte
+   CONSTRAINT lineas_actividad_fk FOREIGN KEY (actividad_id) REFERENCES catalogo_actividades (catalogo_act_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT lineas_encabezado_fk FOREIGN KEY (encabezado_reporte_id) REFERENCES encabezado_reporte (encabezado_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT lineas_fecha_fk FOREIGN KEY (fecha_actividad) REFERENCES calendario (calendario_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CONSTRAINTs for table revisiones_actividad
+--
+ALTER TABLE revisiones_actividad
+   CONSTRAINT revisiones_contacto_fk FOREIGN KEY (reviso_cliente) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT revisiones_contactosup_fk FOREIGN KEY (reviso_supervisor) REFERENCES contacto (contacto_id) ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT revisiones_estado_fk FOREIGN KEY (estado_revision) REFERENCES estado_revision (estado_rev_id) ON DELETE CASCADE ON UPDATE CASCADE;
+   
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
