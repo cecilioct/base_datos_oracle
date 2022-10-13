@@ -1,3 +1,4 @@
+-----------MODULO SISTEMA DE TICKETS---------------------------
 --
 -- Estructura de tabla para la tabla departamento
 --
